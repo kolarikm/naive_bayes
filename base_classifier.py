@@ -1,5 +1,3 @@
-#import lib
-
 def read(fname):
     with open(fname) as f:
         temp = f.readlines()
