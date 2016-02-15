@@ -1,8 +1,8 @@
 import sys
 
 def setup():
-    global data
-    data = []
+    global vals
+    vals = []
 
 def loop():
     while True:
@@ -12,6 +12,7 @@ def loop():
         if choice == "1":
             base_classifier()
         if choice == "2":
+            # ADD ERROR CHECKING IF VALS LENGTH < 1, DONT RUN
             predictor()
         if choice == "3":
             print "Chose 3!"
@@ -35,7 +36,7 @@ def gen(attr, data):
 
 def prior(attr, data):
     temp = float(len([x for x in data if x==attr]))/len(data)
-    data.append(temp)
+    vals.append(temp)
     return temp
     
 def likelihood(attr1, attr2, data1, data2):
@@ -44,7 +45,7 @@ def likelihood(attr1, attr2, data1, data2):
     else:
         temp = [x for x, y in zip(data1, data2) if x==attr1 and y==attr2]
     temp = float(len(temp))/len([x for x in data2 if x==attr2])
-    data.append(temp)
+    vals.append(temp)
     return temp
 
 def weight_convert(data):
@@ -92,7 +93,69 @@ def base_classifier():
 def discriminator(data):
     #Test the incoming data [id,gender,blood,weight] to guess class
     #Return higher of two discriminators
-    return 0
+    if data[1] == "female":
+        gender = "f"
+    else:
+        gender = "m"
+    if "+" in data[2]:
+        blood = "p"
+    else:
+        blood = "n"
+    if data[3] > 170:
+        weight = "y"
+    else:
+        weight = "n"
+
+    if gender == "f":
+        if blood == "p":
+            if weight == "y":
+                d1  = vals[0] * vals[2] * vals[6] * vals[10]
+            else:
+                d1 = vals[0] * vals[2] * vals[6] * vals[12]
+        else:
+            if weight == "y":
+                d1 = vals[0] * vals[2] * vals[8] * vals[10]
+            else:
+                d1 = vals[0] * vals[2] * vals[8] * vals[12]
+    else:
+        if blood == "p":
+            if weight == "y":
+                d1 = vals[0] * vals[4] * vals[6] * vals[10]
+            else:
+                d1 = vals[0] * vals[4] * vals[6] * vals[12]
+        else:
+            if weight == "y":
+                d1 = vals[0] * vals[4] * vals[8] * vals[10]
+            else:
+                d1 = vals[0] * vals[4] * vals[8] * vals[12]
+    
+    if gender == "f":
+        if blood == "p":
+            if weight == "y":
+                d2  = vals[1] * vals[3] * vals[7] * vals[11]
+            else:
+                d2 = vals[1] * vals[3] * vals[7] * vals[13]
+        else:
+            if weight == "y":
+                d2 = vals[1] * vals[3] * vals[9] * vals[11]
+            else:
+                d2 = vals[1] * vals[3] * vals[9] * vals[13]
+    else:
+        if blood == "p":
+            if weight == "y":
+                d2 = vals[1] * vals[5] * vals[7] * vals[11]
+            else:
+                d2 = vals[1] * vals[5] * vals[7] * vals[13]
+        else:
+            if weight == "y":
+                d2 = vals[1] * vals[5] * vals[9] * vals[11]
+            else:
+                d2 = vals[1] * vals[5] * vals[9] * vals[13]    
+
+    if d1 > d2:
+        return "N"
+    else:
+        return "Y"
 
 def predictor():
     #Loop through each te_dat entry and run it through the discriminator
