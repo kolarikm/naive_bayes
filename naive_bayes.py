@@ -71,8 +71,8 @@ def base_classifier():
     tr_weight_ord = weight_convert(tr_weight)
     tr_virus = gen(4, tr_dat)
     print "\n"
-    print "Prior probability for not virus: ", prior("Y", tr_virus)
-    print "Prior probability for positive: ", prior("N", tr_virus)
+    print "Prior probability for not virus: ", prior("N", tr_virus)
+    print "Prior probability for positive: ", prior("Y", tr_virus)
     pr_sep()
     print "Likelihood for female given not virus: ", likelihood("female", "N", tr_genders, tr_virus)
     print "Likelihood for female given virus: ", likelihood("female", "Y", tr_genders, tr_virus)
