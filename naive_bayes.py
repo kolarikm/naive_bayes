@@ -3,19 +3,24 @@ import sys
 def setup():
     global vals
     vals = []
+    global c_m_list
+    c_m_list = []
 
 def loop():
     while True:
         print "Please make a selection:"
         print "1: Base Classifier\n2: Predictor\n3: Confusion Matrix\n0: Exit"
-        choice = raw_input("-> ")
+        choice = raw_input("->")
         if choice == "1":
             base_classifier()
         if choice == "2":
-            # ADD ERROR CHECKING IF VALS LENGTH < 1, DONT RUN
+            if len(vals) == 0:
+                print "Must run classifier before predictor!\n"
+                continue;
             predictor()
         if choice == "3":
-            print "Chose 3!"
+            print "Confusion Matrix"
+            confusion_matrix()
         if choice == "0":
             print "Goodbye!"
             break;
@@ -63,7 +68,6 @@ def pr_sep():
 def base_classifier():
     data = []
     tr_dat = read("proj1train.txt")
-#    te_dat = read("proj1test.txt")
 
     tr_genders = gen(1, tr_dat)
     tr_blood_types = gen(2, tr_dat)
@@ -158,10 +162,38 @@ def discriminator(data):
         return "Y"
 
 def predictor():
-    #Loop through each te_dat entry and run it through the discriminator
+    #Loop through each test data entry and run it through the discriminator
     te_dat = read("proj1test.txt")    
     for x in range(0, len(te_dat)):
-        print str(x+1) + " " + str(te_dat[x][4]) + " " + str(discriminator(te_dat[x]))
+        d = discriminator(te_dat[x]);
+        print str(x+1) + " " + str(te_dat[x][4]) + " " + str(d)
+        save = [te_dat[x][4], d]
+        c_m_list.append(save)
+    print ""
+        
+
+def confusion_matrix():
+    tp = 0
+    fp = 0
+    fn = 0
+    tn = 0
+    for x in c_m_list:
+        if x[0] == "Y":
+            if x[1] == "Y":
+                tp += 1
+            else:
+                fn += 1
+        else:
+            if x[1] == "Y":
+                fp += 1
+            else:
+                tn += 1
+
+    print "\n  |  Y  |  N\n-------------"
+    print "Y | " + str(tp).zfill(3) + " | " + str(fn).zfill(3)
+    print "N | " + str(fp).zfill(3) + " | " + str(tn).zfill(3) + "\n"
+    
+                
 
 setup()
 loop()
